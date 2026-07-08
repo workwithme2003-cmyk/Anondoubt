@@ -687,7 +687,7 @@
 
 <script>
   // ─── CONSTANTS ──────────────────────────────────────────────────────────────
-  const API = 'http://localhost:3000/api';
+  const API = window.location.origin + '/api';
 
   const SUBJECTS = [
     { name:'All',              color:'#94a3b8', emoji:'📋' },
@@ -976,7 +976,9 @@
       if (ac) ac.textContent = totalAnswers;
       showToast('✅ Answer posted!', 'success');
       loadStats();
-    } catch { showToast('❌ Failed to post answer', 'error'); }
+    } catch (err) { 
+      showToast(`❌ ${err.message || 'Failed to post answer'}`, 'error'); 
+    }
     finally { btn.disabled = false; btn.textContent = '📤 Post Answer'; }
   }
 
@@ -1043,7 +1045,9 @@
       document.querySelectorAll('.sort-tab').forEach(t => t.classList.remove('active'));
       document.querySelector('[data-sort="newest"]').classList.add('active');
       await Promise.all([loadQuestions(), loadStats(), loadSubjectCounts()]);
-    } catch { showToast('❌ Failed to post. Is the server running?', 'error'); }
+    } catch (err) { 
+      showToast(`❌ ${err.message || 'Failed to post. Is the server running?'}`, 'error'); 
+    }
     finally { btn.disabled = false; btn.textContent = '🚀 Post Doubt'; }
   };
 
