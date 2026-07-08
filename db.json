@@ -1,0 +1,102 @@
+{
+  "questions": [
+    {
+      "_id": "db097e0b-866a-4673-8c6b-c30fb2448bd4",
+      "subject": "Mathematics",
+      "title": "what are prime numbers?",
+      "body": "",
+      "votes": 0,
+      "createdAt": "2026-07-08T12:00:28.387Z",
+      "answers": []
+    },
+    {
+      "_id": "3e74fd83-0a6e-4e8c-9d7b-ae279877a156",
+      "subject": "Computer Science",
+      "title": "What is the difference between process and thread?",
+      "body": "I keep confusing these two. My professor explained it but I still don't get it. Can someone explain with a simple real-world example?",
+      "votes": 24,
+      "createdAt": "2026-07-08T06:48:22.437Z",
+      "answers": [
+        {
+          "_id": "1d7a2b35-5cea-42b0-a511-b4459f4d45b8",
+          "text": "A process is an independent program with its own memory space. A thread is a unit of execution within a process, sharing the same memory. Think of a process as a restaurant and threads as the waiters working simultaneously!",
+          "createdAt": "2026-07-08T08:18:22.437Z"
+        }
+      ]
+    },
+    {
+      "_id": "77abd417-58f1-4039-90c9-281e4b07a136",
+      "subject": "Mathematics",
+      "title": "How to solve integration by parts? Any trick to remember?",
+      "body": "Especially the ILATE rule — when exactly do I apply it and when not?",
+      "votes": 18,
+      "createdAt": "2026-07-08T03:48:22.437Z",
+      "answers": [
+        {
+          "_id": "247cc9f3-a000-4377-bbb8-5bae6971fd6d",
+          "text": "Remember LIATE: Logarithm, Inverse trig, Algebraic, Trigonometric, Exponential. The first function in LIATE that appears becomes 'u', and the other becomes 'dv'. Practice 5 problems daily!",
+          "createdAt": "2026-07-08T07:48:22.437Z"
+        }
+      ]
+    },
+    {
+      "_id": "31df56f7-7294-46e8-90dd-f81306333654",
+      "subject": "Physics",
+      "title": "Why is the sky blue? What's the actual physics behind it?",
+      "body": "",
+      "votes": 31,
+      "createdAt": "2026-07-08T00:48:22.437Z",
+      "answers": [
+        {
+          "_id": "993169db-e038-4ca2-99fc-17e2250b4a7c",
+          "text": "It's Rayleigh scattering! Shorter blue wavelengths scatter more than red ones when sunlight hits the atmosphere. So wherever you look, blue reaches your eye.",
+          "createdAt": "2026-07-08T06:48:22.437Z"
+        },
+        {
+          "_id": "209b0301-fce5-4188-adb8-7e7683162d23",
+          "text": "At sunset, light travels through more atmosphere so most blue scatters away, leaving red and orange. That's why sunsets are so beautiful!",
+          "createdAt": "2026-07-08T07:48:22.437Z"
+        }
+      ]
+    },
+    {
+      "_id": "032b2686-2e64-49c2-ba48-f338907cb03e",
+      "subject": "Chemistry",
+      "title": "How do I balance redox reactions? I am so lost.",
+      "body": "I know the half-reaction method exists but I always get the wrong answer in the exam.",
+      "votes": 9,
+      "createdAt": "2026-07-08T07:48:22.437Z",
+      "answers": []
+    },
+    {
+      "_id": "749d4954-6e69-4e01-bdba-698b4b927269",
+      "subject": "Economics",
+      "title": "What's the difference between GDP and GNP?",
+      "body": "",
+      "votes": 15,
+      "createdAt": "2026-07-07T20:48:22.437Z",
+      "answers": [
+        {
+          "_id": "bdea17b3-ffc6-4de5-acfa-a43892df8e9e",
+          "text": "GDP = value of goods/services produced within a country's borders. GNP = GDP + income by residents abroad - income by foreigners inside. GDP measures location, GNP measures nationals.",
+          "createdAt": "2026-07-08T07:18:22.437Z"
+        }
+      ]
+    },
+    {
+      "_id": "dbcb25b0-ce00-4073-99f1-566d9adc2a69",
+      "subject": "Biology",
+      "title": "What is the difference between mitosis and meiosis?",
+      "body": "Both involve cell division but I get confused about which produces how many cells.",
+      "votes": 13,
+      "createdAt": "2026-07-07T08:48:22.437Z",
+      "answers": [
+        {
+          "_id": "da12c14c-d2e3-4b44-82e1-503b31a30b55",
+          "text": "Mitosis produces 2 identical daughter cells (for growth & repair). Meiosis produces 4 genetically unique cells (for sexual reproduction). Simple rule: Mitosis = More of the same. Meiosis = Mix it up!",
+          "createdAt": "2026-07-07T20:48:22.437Z"
+        }
+      ]
+    }
+  ]
+}

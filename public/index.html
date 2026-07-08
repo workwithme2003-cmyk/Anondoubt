@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AnonDoubt – Anonymous College Doubt Forum</title>
+  <meta name="description" content="Ask your doubts anonymously. No judgment, just answers. A peer-powered Q&A forum for college students."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    /* ─── THEME TOKENS ──────────────────────────────────────────────────────── */
+    :root {
+      --accent:   #6366f1;
+      --accent2:  #8b5cf6;
+      --green:    #10b981;
+      --red:      #f43f5e;
+      --yellow:   #f59e0b;
+      --cyan:     #06b6d4;
+      --pink:     #ec4899;
+    }
+
+    [data-theme="dark"] {
+      --bg:          #0b0e1a;
+      --surface:     #111827;
+      --card:        #161f35;
+      --card-hover:  #1c2845;
+      --border:      rgba(255,255,255,0.07);
+      --text:        #e2e8f0;
+      --text-sec:    #94a3b8;
+      --muted:       #64748b;
+      --glow:        rgba(99,102,241,0.25);
+      --logo-grad:   linear-gradient(135deg,#a5b4fc,#c4b5fd);
+      --header-bg:   rgba(11,14,26,0.85);
+      --shadow:      0 8px 30px rgba(0,0,0,0.4);
+    }
+
+    [data-theme="light"] {
+      --bg:          #f0f4ff;
+      --surface:     #ffffff;
+      --card:        #ffffff;
+      --card-hover:  #f5f7ff;
+      --border:      rgba(0,0,0,0.08);
+      --text:        #0f172a;
+      --text-sec:    #475569;
+      --muted:       #94a3b8;
+      --glow:        rgba(99,102,241,0.15);
+      --logo-grad:   linear-gradient(135deg,#4f46e5,#7c3aed);
+      --header-bg:   rgba(240,244,255,0.9);
+      --shadow:      0 8px 30px rgba(0,0,0,0.1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    [data-theme="dark"] body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 800px 500px at 10% 20%, rgba(99,102,241,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 600px 400px at 90% 80%, rgba(139,92,246,0.06) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    [data-theme="light"] body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 800px 500px at 10% 20%, rgba(99,102,241,0.05) 0%, transparent 70%),
+        radial-gradient(ellipse 600px 400px at 90% 80%, rgba(139,92,246,0.04) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ─── HEADER ─────────────────────────────────────────────────────────────── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--header-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      transition: background 0.3s;
+    }
+
+    .header-inner {
+      max-width: 1100px; margin: 0 auto;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 10px;
+      display: grid; place-items: center;
+      font-size: 18px;
+      box-shadow: 0 0 20px var(--glow);
+    }
+
+    .logo-text {
+      font-size: 20px; font-weight: 800;
+      background: var(--logo-grad);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .logo-badge {
+      font-size: 10px; font-weight: 600;
+      color: var(--accent);
+      background: rgba(99,102,241,0.15);
+      border: 1px solid rgba(99,102,241,0.3);
+      padding: 2px 7px; border-radius: 20px;
+    }
+
+    .header-right { display: flex; align-items: center; gap: 20px; }
+
+    .header-stats { display: flex; gap: 20px; }
+
+    .stat-pill {
+      font-size: 12px; color: var(--muted);
+      display: flex; align-items: center; gap: 5px;
+    }
+
+    .stat-pill span { color: var(--text); font-weight: 600; }
+
+    /* ─── THEME TOGGLE ───────────────────────────────────────────────────────── */
+    .theme-toggle {
+      width: 44px; height: 24px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s ease;
+      display: flex; align-items: center;
+      padding: 2px;
+      flex-shrink: 0;
+    }
+
+    .theme-toggle::after {
+      content: '';
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 0 2px 6px var(--glow);
+    }
+
+    [data-theme="light"] .theme-toggle::after { transform: translateX(20px); }
+
+    .theme-icon {
+      position: absolute;
+      font-size: 11px;
+      transition: opacity 0.3s;
+    }
+
+    .theme-icon.moon { left: 4px; opacity: 1; }
+    .theme-icon.sun  { right: 4px; opacity: 0; }
+    [data-theme="light"] .theme-icon.moon { opacity: 0; }
+    [data-theme="light"] .theme-icon.sun  { opacity: 1; }
+
+    /* ─── MAIN LAYOUT ────────────────────────────────────────────────────────── */
+    .container {
+      max-width: 1100px; margin: 0 auto;
+      padding: 32px 24px;
+      position: relative; z-index: 1;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    /* ─── SIDEBAR ────────────────────────────────────────────────────────────── */
+    .sidebar {
+      position: sticky; top: 88px;
+      display: flex; flex-direction: column; gap: 20px;
+    }
+
+    .sidebar-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 20px;
+      transition: background 0.3s, border-color 0.3s;
+      box-shadow: var(--shadow);
+    }
+
+    .sidebar-title {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.2px;
+      color: var(--muted); margin-bottom: 14px;
+    }
+
+    .subject-list { display: flex; flex-direction: column; gap: 4px; }
+
+    .subject-btn {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px; border-radius: 10px;
+      border: none; background: transparent;
+      color: var(--muted); font-family: 'Inter', sans-serif;
+      font-size: 14px; cursor: pointer;
+      transition: all 0.2s ease; text-align: left; width: 100%;
+    }
+
+    .subject-btn:hover { background: rgba(99,102,241,0.08); color: var(--text); }
+    .subject-btn.active { background: rgba(99,102,241,0.15); color: var(--accent); font-weight: 600; }
+
+    [data-theme="light"] .subject-btn:hover { background: rgba(99,102,241,0.08); }
+    [data-theme="light"] .subject-btn.active { background: rgba(99,102,241,0.12); }
+
+    .subject-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-right: 10px; }
+    .subject-left { display: flex; align-items: center; }
+
+    .subject-count {
+      font-size: 11px;
+      background: rgba(99,102,241,0.1);
+      color: var(--accent);
+      padding: 2px 7px; border-radius: 20px; font-weight: 600;
+    }
+
+    .ask-btn {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none; border-radius: 12px;
+      color: white; font-family: 'Inter', sans-serif;
+      font-size: 15px; font-weight: 700; cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px var(--glow);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+
+    .ask-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--glow); }
+
+    /* ─── MAIN ───────────────────────────────────────────────────────────────── */
+    .main { display: flex; flex-direction: column; gap: 20px; }
+
+    .search-bar { position: relative; }
+
+    .search-input {
+      width: 100%; padding: 14px 16px 14px 46px;
+      background: var(--card);
+      border: 1px solid var(--border); border-radius: 12px;
+      color: var(--text); font-family: 'Inter', sans-serif;
+      font-size: 14px; outline: none; transition: border-color 0.2s, background 0.3s;
+    }
+
+    .search-input:focus { border-color: var(--accent); }
+    .search-input::placeholder { color: var(--muted); }
+
+    .search-icon {
+      position: absolute; left: 15px; top: 50%;
+      transform: translateY(-50%); color: var(--muted);
+      font-size: 18px; pointer-events: none;
+    }
+
+    .sort-tabs {
+      display: flex; gap: 8px;
+      background: var(--card); padding: 5px;
+      border-radius: 12px; border: 1px solid var(--border);
+      transition: background 0.3s;
+    }
+
+    .sort-tab {
+      flex: 1; padding: 8px; border: none; border-radius: 8px;
+      background: transparent; color: var(--muted);
+      font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: all 0.2s;
+    }
+
+    .sort-tab.active { background: var(--accent); color: white; font-weight: 600; }
+
+    /* ─── QUESTION CARD ──────────────────────────────────────────────────────── */
+    .q-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 20px;
+      transition: all 0.3s ease; cursor: pointer; position: relative; overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .q-card::before {
+      content: ''; position: absolute;
+      left: 0; top: 0; bottom: 0; width: 3px;
+      background: linear-gradient(to bottom, var(--accent), var(--accent2));
+      opacity: 0; transition: opacity 0.3s;
+    }
+
+    .q-card:hover { background: var(--card-hover); border-color: rgba(99,102,241,0.3); transform: translateY(-2px); }
+    .q-card:hover::before { opacity: 1; }
+
+    .q-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 12px; margin-bottom: 10px;
+    }
+
+    .q-subject-tag {
+      font-size: 11px; font-weight: 600;
+      padding: 3px 10px; border-radius: 20px; flex-shrink: 0;
+    }
+
+    .q-title { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.5; margin-bottom: 8px; }
+
+    .q-preview {
+      font-size: 13px; color: var(--text-sec); line-height: 1.6;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+
+    .q-footer {
+      display: flex; align-items: center; justify-content: space-between; margin-top: 14px;
+    }
+
+    .q-meta { display: flex; align-items: center; gap: 14px; font-size: 12px; color: var(--muted); }
+    .q-meta-item { display: flex; align-items: center; gap: 4px; }
+    .q-actions { display: flex; gap: 8px; }
+
+    .vote-btn {
+      display: flex; align-items: center; gap: 5px;
+      padding: 6px 12px; border-radius: 8px;
+      border: 1px solid var(--border); background: transparent;
+      color: var(--muted); font-family: 'Inter', sans-serif;
+      font-size: 13px; cursor: pointer; transition: all 0.2s;
+    }
+
+    .vote-btn:hover { background: rgba(16,185,129,0.1); border-color: var(--green); color: var(--green); }
+    .vote-btn.voted { background: rgba(16,185,129,0.15); border-color: var(--green); color: var(--green); font-weight: 600; }
+
+    .answer-btn {
+      display: flex; align-items: center; gap: 5px;
+      padding: 6px 12px; border-radius: 8px;
+      border: 1px solid var(--border); background: transparent;
+      color: var(--muted); font-family: 'Inter', sans-serif;
+      font-size: 13px; cursor: pointer; transition: all 0.2s;
+    }
+
+    .answer-btn:hover { background: rgba(99,102,241,0.1); border-color: var(--accent); color: var(--accent); }
+
+    /* ─── MODAL ──────────────────────────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      z-index: 200; display: none;
+      place-items: center; padding: 20px;
+    }
+
+    .modal-overlay.open { display: grid; animation: fadeIn 0.2s ease; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .modal {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 32px;
+      width: 100%; max-width: 600px; max-height: 90vh;
+      overflow-y: auto; animation: slideUp 0.3s ease; position: relative;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+      transition: background 0.3s;
+    }
+
+    @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    .modal-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+    .form-group { margin-bottom: 18px; }
+
+    .form-label {
+      display: block; font-size: 13px; font-weight: 600;
+      color: var(--muted); margin-bottom: 8px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%; padding: 12px 14px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; color: var(--text);
+      font-family: 'Inter', sans-serif; font-size: 14px;
+      outline: none; transition: border-color 0.2s, background 0.3s;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+    .form-textarea { resize: vertical; min-height: 100px; }
+    .form-select { cursor: pointer; }
+
+    .modal-actions { display: flex; gap: 10px; margin-top: 24px; }
+
+    .btn-primary {
+      flex: 1; padding: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none; border-radius: 10px; color: white;
+      font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+    }
+
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .btn-cancel {
+      padding: 12px 20px; background: transparent;
+      border: 1px solid var(--border); border-radius: 10px;
+      color: var(--muted); font-family: 'Inter', sans-serif;
+      font-size: 15px; cursor: pointer; transition: all 0.2s;
+    }
+
+    .btn-cancel:hover { border-color: var(--muted); color: var(--text); }
+
+    .modal-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px; border-radius: 8px;
+      background: rgba(99,102,241,0.1); border: none;
+      color: var(--muted); font-size: 16px;
+      cursor: pointer; display: grid; place-items: center; transition: all 0.2s;
+    }
+
+    .modal-close:hover { background: rgba(99,102,241,0.2); color: var(--text); }
+
+    /* ─── DETAIL MODAL ───────────────────────────────────────────────────────── */
+    .q-detail-title { font-size: 22px; font-weight: 700; line-height: 1.4; margin: 12px 0 8px; }
+    .q-detail-body { font-size: 15px; color: var(--text-sec); line-height: 1.7; margin-bottom: 20px; }
+
+    .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+    .answers-title {
+      font-size: 13px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.8px;
+      margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+    }
+
+    .answer-count-badge {
+      background: var(--accent); color: white;
+      font-size: 11px; padding: 2px 8px; border-radius: 20px;
+    }
+
+    .answer-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px; margin-bottom: 12px;
+      animation: slideUp 0.3s ease; transition: background 0.3s;
+    }
+
+    .answer-text { font-size: 14px; color: var(--text); line-height: 1.7; }
+    .answer-meta { font-size: 12px; color: var(--muted); margin-top: 10px; }
+
+    .write-answer { margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px; }
+    .write-answer-label { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: var(--text); }
+
+    .anon-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: white; flex-shrink: 0;
+    }
+
+    /* ─── SKELETON LOADER ────────────────────────────────────────────────────── */
+    .skeleton {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 20px; margin-bottom: 0;
+    }
+
+    .skel-line {
+      height: 14px; border-radius: 7px; margin-bottom: 10px;
+      background: linear-gradient(90deg, var(--border) 25%, rgba(99,102,241,0.1) 50%, var(--border) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    /* ─── EMPTY STATE ────────────────────────────────────────────────────────── */
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+    .empty-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-text { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .empty-sub { font-size: 14px; }
+
+    /* ─── TOAST ──────────────────────────────────────────────────────────────── */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 20px;
+      font-size: 14px; font-weight: 500; z-index: 999;
+      display: flex; align-items: center; gap: 10px;
+      box-shadow: var(--shadow);
+      transform: translateY(100px); opacity: 0;
+      transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+    }
+
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-color: var(--green); }
+    .toast.error   { border-color: var(--red); }
+
+    /* ─── TAGS ───────────────────────────────────────────────────────────────── */
+    .tags-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .tag {
+      font-size: 11px; padding: 4px 10px; border-radius: 20px;
+      background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2);
+      color: var(--muted); cursor: pointer; transition: all 0.2s;
+    }
+
+    .tag:hover { background: rgba(99,102,241,0.18); color: var(--accent); border-color: rgba(99,102,241,0.4); }
+
+    /* ─── STATUS DOT ─────────────────────────────────────────────────────────── */
+    .db-status {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; color: var(--muted);
+    }
+
+    .db-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--muted); transition: background 0.3s;
+    }
+
+    .db-dot.connected { background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; }
+    .db-dot.error { background: var(--red); }
+
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+    /* ─── NEW BADGE ──────────────────────────────────────────────────────────── */
+    .new-badge {
+      font-size: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white; padding: 2px 7px; border-radius: 20px; font-weight: 600;
+    }
+
+    /* ─── SCROLLBAR ──────────────────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(99,102,241,0.5); }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .container { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .header-stats { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── HEADER ─────────────────────────────────────────────────────────────── -->
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">🤫</div>
+      <span class="logo-text">AnonDoubt</span>
+      <span class="logo-badge">v2.0</span>
+    </a>
+    <div class="header-right">
+      <div class="header-stats">
+        <div class="stat-pill">🙋 <span id="totalQ">—</span> questions</div>
+        <div class="stat-pill">💬 <span id="totalA">—</span> answers</div>
+        <div class="stat-pill">👥 <span id="totalU">—</span> helpers</div>
+      </div>
+      <!-- Theme Toggle -->
+      <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+        <span class="theme-icon moon">🌙</span>
+        <span class="theme-icon sun">☀️</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ─── MAIN ──────────────────────────────────────────────────────────────── -->
+<div class="container">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <button class="ask-btn" id="openAskBtn">✏️ Ask Anonymously</button>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">📚 Subjects</div>
+      <div class="subject-list" id="subjectList">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">🔥 Trending Tags</div>
+      <div class="tags-wrap">
+        <span class="tag">#exam</span>
+        <span class="tag">#assignment</span>
+        <span class="tag">#theory</span>
+        <span class="tag">#practical</span>
+        <span class="tag">#project</span>
+        <span class="tag">#viva</span>
+        <span class="tag">#notes</span>
+        <span class="tag">#lab</span>
+      </div>
+    </div>
+
+    <div class="sidebar-card" style="background:linear-gradient(135deg,rgba(99,102,241,0.1),rgba(139,92,246,0.1));border-color:rgba(99,102,241,0.3)">
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px">🔒 100% Anonymous</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6">No login required. Your identity is never stored. Ask freely, answer boldly.</div>
+      <div class="db-status" style="margin-top:12px">
+        <div class="db-dot" id="dbDot"></div>
+        <span id="dbStatus">Connecting to DB...</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search doubts, topics, subjects..."/>
+    </div>
+
+    <div class="sort-tabs">
+      <button class="sort-tab active" data-sort="newest">🕒 Newest</button>
+      <button class="sort-tab" data-sort="popular">🔥 Most Voted</button>
+      <button class="sort-tab" data-sort="unanswered">❓ Unanswered</button>
+    </div>
+
+    <div id="questionsList">
+      <!-- Skeleton loaders -->
+      <div class="skeleton">
+        <div class="skel-line" style="width:30%;height:12px"></div>
+        <div class="skel-line" style="width:80%;height:16px;margin-top:14px"></div>
+        <div class="skel-line" style="width:60%"></div>
+      </div>
+      <div class="skeleton" style="margin-top:20px">
+        <div class="skel-line" style="width:25%;height:12px"></div>
+        <div class="skel-line" style="width:90%;height:16px;margin-top:14px"></div>
+        <div class="skel-line" style="width:70%"></div>
+      </div>
+      <div class="skeleton" style="margin-top:20px">
+        <div class="skel-line" style="width:35%;height:12px"></div>
+        <div class="skel-line" style="width:75%;height:16px;margin-top:14px"></div>
+        <div class="skel-line" style="width:55%"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ─── ASK MODAL ─────────────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="askModal">
+  <div class="modal">
+    <button class="modal-close" id="closeAskBtn">✕</button>
+    <div class="modal-title">🤫 Ask Anonymously</div>
+    <div class="modal-sub">No one will know it's you. Ask freely without fear of judgment.</div>
+
+    <div class="form-group">
+      <label class="form-label">Subject *</label>
+      <select class="form-select" id="qSubject">
+        <option value="">— Select Subject —</option>
+        <option>Mathematics</option>
+        <option>Physics</option>
+        <option>Chemistry</option>
+        <option>Computer Science</option>
+        <option>English</option>
+        <option>Biology</option>
+        <option>Economics</option>
+        <option>History</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Your Doubt *</label>
+      <input type="text" class="form-input" id="qTitle" placeholder="e.g. What is the difference between TCP and UDP?" maxlength="200"/>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">More Details (optional)</label>
+      <textarea class="form-textarea" id="qBody" placeholder="Add more context — the more detail, the better the answer..."></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" id="cancelAskBtn">Cancel</button>
+      <button class="btn-primary" id="submitQuestion">🚀 Post Doubt</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DETAIL MODAL ──────────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal" id="detailContent"></div>
+</div>
+
+<!-- ─── TOAST ─────────────────────────────────────────────────────────────── -->
+<div class="toast" id="toast">
+  <span id="toastIcon">✅</span>
+  <span id="toastMsg">Done!</span>
+</div>
+
+<script>
+  // ─── CONSTANTS ──────────────────────────────────────────────────────────────
+  const API = 'http://localhost:3000/api';
+
+  const SUBJECTS = [
+    { name:'All',              color:'#94a3b8', emoji:'📋' },
+    { name:'Mathematics',      color:'#6366f1', emoji:'📐' },
+    { name:'Physics',          color:'#06b6d4', emoji:'⚛️' },
+    { name:'Chemistry',        color:'#10b981', emoji:'🧪' },
+    { name:'Computer Science', color:'#8b5cf6', emoji:'💻' },
+    { name:'English',          color:'#f59e0b', emoji:'📝' },
+    { name:'Biology',          color:'#f43f5e', emoji:'🧬' },
+    { name:'Economics',        color:'#ec4899', emoji:'📊' },
+    { name:'History',          color:'#a78bfa', emoji:'🏛️'  },
+  ];
+
+  const AVATARS = {
+    colors: ['#6366f1','#8b5cf6','#10b981','#f59e0b','#f43f5e','#06b6d4','#ec4899'],
+    emojis: ['🦊','🐼','🦋','🐉','🦅','🐺','🦁','🐸','🦄','🐙']
+  };
+
+  // ─── STATE ──────────────────────────────────────────────────────────────────
+  let activeSubject = 'All';
+  let activeSort    = 'newest';
+  let searchQuery   = '';
+  let subjectCounts = {};
+  let votedIds      = JSON.parse(localStorage.getItem('ad_voted') || '[]');
+  let fetchTimer    = null;
+
+  // ─── HELPERS ────────────────────────────────────────────────────────────────
+  function timeAgo(ts) {
+    const d = Date.now() - new Date(ts).getTime();
+    const m = Math.floor(d/60000), h = Math.floor(d/3600000), dy = Math.floor(d/86400000);
+    if (m < 1) return 'just now';
+    if (m < 60) return m + 'm ago';
+    if (h < 24) return h + 'h ago';
+    return dy + 'd ago';
+  }
+
+  function sColor(n) { return (SUBJECTS.find(s=>s.name===n)||{color:'#64748b'}).color; }
+  function sEmoji(n) { return (SUBJECTS.find(s=>s.name===n)||{emoji:'📋'}).emoji; }
+
+  function rAvatar() {
+    return {
+      color: AVATARS.colors[Math.floor(Math.random()*AVATARS.colors.length)],
+      emoji: AVATARS.emojis[Math.floor(Math.random()*AVATARS.emojis.length)]
+    };
+  }
+
+  function esc(s) {
+    if (!s) return '';
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ─── THEME ──────────────────────────────────────────────────────────────────
+  const savedTheme = localStorage.getItem('ad_theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+
+  document.getElementById('themeToggle').onclick = () => {
+    const curr = document.documentElement.getAttribute('data-theme');
+    const next = curr === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('ad_theme', next);
+  };
+
+  // ─── API CALLS ──────────────────────────────────────────────────────────────
+  async function apiFetch(path, opts = {}) {
+    const res = await fetch(API + path, {
+      headers: { 'Content-Type': 'application/json' },
+      ...opts
+    });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.error || 'API error');
+    return json;
+  }
+
+  // ─── DB STATUS ──────────────────────────────────────────────────────────────
+  async function checkDB() {
+    try {
+      await apiFetch('/stats');
+      document.getElementById('dbDot').className = 'db-dot connected';
+      document.getElementById('dbStatus').textContent = 'MongoDB connected';
+    } catch {
+      document.getElementById('dbDot').className = 'db-dot error';
+      document.getElementById('dbStatus').textContent = 'DB not connected';
+    }
+  }
+
+  // ─── STATS ──────────────────────────────────────────────────────────────────
+  async function loadStats() {
+    try {
+      const { data } = await apiFetch('/stats');
+      document.getElementById('totalQ').textContent = data.questions;
+      document.getElementById('totalA').textContent = data.answers;
+      document.getElementById('totalU').textContent = data.helpers;
+    } catch {}
+  }
+
+  // ─── SUBJECT COUNTS ─────────────────────────────────────────────────────────
+  async function loadSubjectCounts() {
+    try {
+      const { data } = await apiFetch('/subjects/counts');
+      subjectCounts = data;
+    } catch {}
+    renderSubjects();
+  }
+
+  function renderSubjects() {
+    document.getElementById('subjectList').innerHTML = SUBJECTS.map(s => {
+      const count = s.name === 'All' ? (subjectCounts.All || 0) : (subjectCounts[s.name] || 0);
+      return `
+        <button class="subject-btn ${activeSubject===s.name?'active':''}" onclick="setSub('${s.name}')">
+          <div class="subject-left">
+            <div class="subject-dot" style="background:${s.color}"></div>
+            ${s.emoji} ${s.name}
+          </div>
+          <span class="subject-count">${count}</span>
+        </button>`;
+    }).join('');
+  }
+
+  // ─── QUESTIONS ──────────────────────────────────────────────────────────────
+  async function loadQuestions() {
+    const params = new URLSearchParams();
+    if (activeSubject !== 'All') params.set('subject', activeSubject);
+    if (activeSort) params.set('sort', activeSort);
+    if (searchQuery) params.set('search', searchQuery);
+
+    try {
+      const { data } = await apiFetch('/questions?' + params.toString());
+      renderQuestions(data);
+    } catch (e) {
+      document.getElementById('questionsList').innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">⚠️</div>
+          <div class="empty-text">Cannot connect to server</div>
+          <div class="empty-sub">Make sure the backend is running: <code>npm run dev</code></div>
+        </div>`;
+    }
+  }
+
+  function renderQuestions(qs) {
+    const list = document.getElementById('questionsList');
+    if (!qs.length) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">🔍</div>
+          <div class="empty-text">No doubts found</div>
+          <div class="empty-sub">Be the first to ask something!</div>
+        </div>`;
+      return;
+    }
+
+    list.innerHTML = qs.map((q, i) => {
+      const c = sColor(q.subject);
+      const isNew = (Date.now() - new Date(q.createdAt).getTime()) < 3600000;
+      const voted = votedIds.includes(q._id);
+      return `
+        <div class="q-card" onclick="openDetail('${q._id}')" style="animation:slideUp .3s ease ${i*.04}s both">
+          <div class="q-header">
+            <span class="q-subject-tag" style="background:${c}22;color:${c};border:1px solid ${c}44">
+              ${sEmoji(q.subject)} ${q.subject}
+            </span>
+            ${isNew ? '<span class="new-badge">NEW</span>' : ''}
+          </div>
+          <div class="q-title">${esc(q.title)}</div>
+          ${q.body ? `<div class="q-preview">${esc(q.body)}</div>` : ''}
+          <div class="q-footer">
+            <div class="q-meta">
+              <span class="q-meta-item">🕒 ${timeAgo(q.createdAt)}</span>
+              <span class="q-meta-item">💬 ${q.answers.length} answer${q.answers.length!==1?'s':''}</span>
+            </div>
+            <div class="q-actions" onclick="event.stopPropagation()">
+              <button class="vote-btn ${voted?'voted':''}" id="vbtn-${q._id}" onclick="vote('${q._id}')">
+                👍 <span id="vc-${q._id}">${q.votes}</span>
+              </button>
+              <button class="answer-btn" onclick="openDetail('${q._id}')">💬 Answer</button>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // ─── VOTE ───────────────────────────────────────────────────────────────────
+  async function vote(id) {
+    const isVoted = votedIds.includes(id);
+    const action = isVoted ? 'down' : 'up';
+    try {
+      const { votes } = await apiFetch('/questions/' + id + '/vote', {
+        method: 'PATCH', body: JSON.stringify({ action })
+      });
+      if (isVoted) votedIds = votedIds.filter(v => v !== id);
+      else { votedIds.push(id); showToast('👍 Upvoted!', 'success'); }
+      localStorage.setItem('ad_voted', JSON.stringify(votedIds));
+      const vc = document.getElementById('vc-' + id);
+      const vb = document.getElementById('vbtn-' + id);
+      if (vc) vc.textContent = votes;
+      if (vb) vb.className = 'vote-btn ' + (votedIds.includes(id) ? 'voted' : '');
+    } catch { showToast('❌ Error voting', 'error'); }
+  }
+
+  // ─── DETAIL ─────────────────────────────────────────────────────────────────
+  async function openDetail(id) {
+    document.getElementById('detailContent').innerHTML = `
+      <button class="modal-close" onclick="closeDetail()">✕</button>
+      <div style="display:flex;align-items:center;justify-content:center;padding:60px">
+        <div style="font-size:32px;animation:spin 1s linear infinite">⏳</div>
+      </div>`;
+    document.getElementById('detailModal').classList.add('open');
+
+    try {
+      const { data: q } = await apiFetch('/questions/' + id);
+      renderDetail(q);
+    } catch { showToast('❌ Failed to load question', 'error'); closeDetail(); }
+  }
+
+  function renderDetail(q) {
+    const c = sColor(q.subject);
+    const voted = votedIds.includes(q._id);
+    document.getElementById('detailContent').innerHTML = `
+      <button class="modal-close" onclick="closeDetail()">✕</button>
+      <span class="q-subject-tag" style="background:${c}22;color:${c};border:1px solid ${c}44;font-size:12px;padding:4px 12px;border-radius:20px;font-weight:600">
+        ${sEmoji(q.subject)} ${q.subject}
+      </span>
+      <div class="q-detail-title">${esc(q.title)}</div>
+      ${q.body ? `<div class="q-detail-body">${esc(q.body)}</div>` : ''}
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px">
+        <button class="vote-btn ${voted?'voted':''}" id="dv-btn" onclick="voteDetail('${q._id}')">
+          👍 <span id="dv-count">${q.votes}</span> votes
+        </button>
+        <span style="font-size:12px;color:var(--muted)">🕒 ${timeAgo(q.createdAt)}</span>
+      </div>
+      <div class="divider"></div>
+      <div class="answers-title">
+        Answers
+        <span class="answer-count-badge" id="dv-ansCount">${q.answers.length}</span>
+      </div>
+      <div id="dv-answersList">
+        ${q.answers.length
+          ? q.answers.map(ansHtml).join('')
+          : '<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px">🌟 Be the first to answer!</div>'
+        }
+      </div>
+      <div class="write-answer">
+        <div class="write-answer-label">✍️ Write an Answer</div>
+        <textarea class="form-textarea" id="ansInput" placeholder="Share your knowledge anonymously..."></textarea>
+        <div class="modal-actions" style="margin-top:12px">
+          <button class="btn-primary" id="submitAns" onclick="submitAnswer('${q._id}')">📤 Post Answer</button>
+        </div>
+      </div>`;
+  }
+
+  async function voteDetail(id) {
+    await vote(id);
+    // update detail vote count from DOM
+    const vc = document.getElementById('vc-' + id);
+    const dvc = document.getElementById('dv-count');
+    const dvb = document.getElementById('dv-btn');
+    if (vc && dvc) dvc.textContent = vc.textContent;
+    if (dvb) dvb.className = 'vote-btn ' + (votedIds.includes(id) ? 'voted' : '');
+  }
+
+  function ansHtml(a) {
+    const av = rAvatar();
+    return `
+      <div class="answer-card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <div class="anon-avatar" style="background:${av.color}">${av.emoji}</div>
+          <span style="font-size:12px;color:var(--muted)">Anonymous • ${timeAgo(a.createdAt)}</span>
+        </div>
+        <div class="answer-text">${esc(a.text)}</div>
+      </div>`;
+  }
+
+  async function submitAnswer(id) {
+    const inp = document.getElementById('ansInput');
+    const btn = document.getElementById('submitAns');
+    const text = inp.value.trim();
+    if (!text) { showToast('⚠️ Please write an answer', 'error'); return; }
+    btn.disabled = true; btn.textContent = '⏳ Posting...';
+    try {
+      const { data: ans, totalAnswers } = await apiFetch('/questions/' + id + '/answers', {
+        method: 'POST', body: JSON.stringify({ text })
+      });
+      inp.value = '';
+      const al = document.getElementById('dv-answersList');
+      const ac = document.getElementById('dv-ansCount');
+      if (al) al.insertAdjacentHTML('beforeend', ansHtml(ans));
+      if (ac) ac.textContent = totalAnswers;
+      showToast('✅ Answer posted!', 'success');
+      loadStats();
+    } catch { showToast('❌ Failed to post answer', 'error'); }
+    finally { btn.disabled = false; btn.textContent = '📤 Post Answer'; }
+  }
+
+  function closeDetail() {
+    document.getElementById('detailModal').classList.remove('open');
+    loadQuestions();
+    loadStats();
+    loadSubjectCounts();
+  }
+
+  // ─── FILTERS ────────────────────────────────────────────────────────────────
+  function setSub(name) {
+    activeSubject = name;
+    renderSubjects();
+    loadQuestions();
+  }
+
+  document.querySelectorAll('.sort-tab').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.sort-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      activeSort = btn.dataset.sort;
+      loadQuestions();
+    };
+  });
+
+  document.getElementById('searchInput').oninput = e => {
+    searchQuery = e.target.value.trim();
+    clearTimeout(fetchTimer);
+    fetchTimer = setTimeout(loadQuestions, 350);
+  };
+
+  // ─── ASK MODAL ──────────────────────────────────────────────────────────────
+  document.getElementById('openAskBtn').onclick = () => document.getElementById('askModal').classList.add('open');
+  document.getElementById('closeAskBtn').onclick =
+  document.getElementById('cancelAskBtn').onclick = () => document.getElementById('askModal').classList.remove('open');
+
+  document.getElementById('askModal').onclick = e => {
+    if (e.target === document.getElementById('askModal')) document.getElementById('askModal').classList.remove('open');
+  };
+
+  document.getElementById('detailModal').onclick = e => {
+    if (e.target === document.getElementById('detailModal')) closeDetail();
+  };
+
+  document.getElementById('submitQuestion').onclick = async () => {
+    const subject = document.getElementById('qSubject').value;
+    const title   = document.getElementById('qTitle').value.trim();
+    const body    = document.getElementById('qBody').value.trim();
+    if (!subject) { showToast('⚠️ Please select a subject', 'error'); return; }
+    if (!title)   { showToast('⚠️ Please enter your doubt', 'error'); return; }
+
+    const btn = document.getElementById('submitQuestion');
+    btn.disabled = true; btn.textContent = '⏳ Posting...';
+
+    try {
+      await apiFetch('/questions', { method: 'POST', body: JSON.stringify({ subject, title, body }) });
+      document.getElementById('askModal').classList.remove('open');
+      document.getElementById('qTitle').value = '';
+      document.getElementById('qBody').value  = '';
+      document.getElementById('qSubject').value = '';
+      showToast('✅ Doubt posted anonymously!', 'success');
+      activeSort = 'newest';
+      document.querySelectorAll('.sort-tab').forEach(t => t.classList.remove('active'));
+      document.querySelector('[data-sort="newest"]').classList.add('active');
+      await Promise.all([loadQuestions(), loadStats(), loadSubjectCounts()]);
+    } catch { showToast('❌ Failed to post. Is the server running?', 'error'); }
+    finally { btn.disabled = false; btn.textContent = '🚀 Post Doubt'; }
+  };
+
+  // ─── TOAST ──────────────────────────────────────────────────────────────────
+  let toastTimer;
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    document.getElementById('toastIcon').textContent = type === 'success' ? '✅' : '⚠️';
+    t.className = 'toast ' + type;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // ─── INIT ────────────────────────────────────────────────────────────────────
+  async function init() {
+    await checkDB();
+    await Promise.all([loadStats(), loadSubjectCounts(), loadQuestions()]);
+  }
+
+  init();
+</script>
+</body>
+</html>

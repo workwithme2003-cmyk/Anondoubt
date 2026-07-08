@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AnonDoubt – Anonymous College Doubt Forum</title>
+  <meta name="description" content="Ask your doubts anonymously. No judgment, just answers. A peer-powered Q&A forum for college students."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0b0e1a;
+      --surface: #111827;
+      --card: #161f35;
+      --card-hover: #1c2845;
+      --border: rgba(255,255,255,0.07);
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --accent: #6366f1;
+      --accent2: #8b5cf6;
+      --green: #10b981;
+      --red: #f43f5e;
+      --yellow: #f59e0b;
+      --cyan: #06b6d4;
+      --pink: #ec4899;
+      --glow: rgba(99,102,241,0.25);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 800px 500px at 10% 20%, rgba(99,102,241,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 600px 400px at 90% 80%, rgba(139,92,246,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(11,14,26,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      box-shadow: 0 0 20px var(--glow);
+    }
+
+    .logo-text {
+      font-size: 20px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #a5b4fc, #c4b5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo-badge {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--accent);
+      background: rgba(99,102,241,0.15);
+      border: 1px solid rgba(99,102,241,0.3);
+      padding: 2px 7px;
+      border-radius: 20px;
+    }
+
+    .header-stats { display: flex; gap: 20px; }
+
+    .stat-pill {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .stat-pill span { color: var(--text); font-weight: 600; }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 24px;
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 88px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .sidebar-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .sidebar-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .subject-list { display: flex; flex-direction: column; gap: 4px; }
+
+    .subject-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+      width: 100%;
+    }
+
+    .subject-btn:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+    .subject-btn.active { background: rgba(99,102,241,0.15); color: #a5b4fc; font-weight: 600; }
+
+    .subject-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-right: 10px;
+    }
+
+    .subject-left { display: flex; align-items: center; }
+
+    .subject-count {
+      font-size: 11px;
+      background: rgba(255,255,255,0.06);
+      padding: 2px 7px;
+      border-radius: 20px;
+    }
+
+    .ask-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px var(--glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .ask-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px var(--glow);
+    }
+
+    .main { display: flex; flex-direction: column; gap: 20px; }
+
+    .search-bar { position: relative; }
+
+    .search-input {
+      width: 100%;
+      padding: 14px 16px 14px 46px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus { border-color: var(--accent); }
+    .search-input::placeholder { color: var(--muted); }
+
+    .search-icon {
+      position: absolute;
+      left: 15px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 18px;
+      pointer-events: none;
+    }
+
+    .sort-tabs {
+      display: flex;
+      gap: 8px;
+      background: var(--card);
+      padding: 5px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .sort-tab {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .sort-tab.active { background: var(--accent); color: white; font-weight: 600; }
+
+    .q-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .q-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, var(--accent), var(--accent2));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .q-card:hover { background: var(--card-hover); border-color: rgba(99,102,241,0.3); transform: translateY(-1px); }
+    .q-card:hover::before { opacity: 1; }
+
+    .q-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .q-subject-tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      flex-shrink: 0;
+    }
+
+    .q-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .q-preview {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .q-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 14px;
+    }
+
+    .q-meta {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .q-meta-item { display: flex; align-items: center; gap: 4px; }
+    .q-actions { display: flex; gap: 8px; }
+
+    .vote-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .vote-btn:hover { background: rgba(16,185,129,0.1); border-color: var(--green); color: var(--green); }
+    .vote-btn.voted { background: rgba(16,185,129,0.15); border-color: var(--green); color: var(--green); font-weight: 600; }
+
+    .answer-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .answer-btn:hover { background: rgba(99,102,241,0.1); border-color: var(--accent); color: #a5b4fc; }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      display: none;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.open { display: grid; animation: fadeIn 0.2s ease; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s ease;
+      position: relative;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+    .form-group { margin-bottom: 18px; }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+    .form-textarea { resize: vertical; min-height: 100px; }
+    .form-select option { background: var(--card); }
+
+    .modal-actions { display: flex; gap: 10px; margin-top: 24px; }
+
+    .btn-primary {
+      flex: 1;
+      padding: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    .btn-cancel {
+      padding: 12px 20px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-cancel:hover { border-color: var(--muted); color: var(--text); }
+
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      border: none;
+      color: var(--muted);
+      font-size: 18px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+
+    .q-detail-title {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.4;
+      margin: 12px 0 8px;
+    }
+
+    .q-detail-body {
+      font-size: 15px;
+      color: #94a3b8;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .answers-section { margin-top: 24px; }
+
+    .answers-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .answer-count-badge {
+      background: var(--accent);
+      color: white;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .answer-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      animation: slideUp 0.3s ease;
+    }
+
+    .answer-text { font-size: 14px; color: var(--text); line-height: 1.7; }
+    .answer-meta { font-size: 12px; color: var(--muted); margin-top: 10px; }
+
+    .write-answer {
+      margin-top: 20px;
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+    }
+
+    .write-answer-label { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+
+    .empty-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-text { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .empty-sub { font-size: 14px; }
+
+    .toast {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-color: var(--green); }
+    .toast.success .toast-icon { color: var(--green); }
+
+    .tags-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .tag {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tag:hover { background: rgba(99,102,241,0.15); color: #a5b4fc; border-color: rgba(99,102,241,0.4); }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+    .anon-avatar {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: white; flex-shrink: 0;
+    }
+
+    .new-badge {
+      font-size: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      padding: 2px 7px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .container { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .header-stats { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">🤫</div>
+      <span class="logo-text">AnonDoubt</span>
+      <span class="logo-badge">BETA</span>
+    </a>
+    <div class="header-stats">
+      <div class="stat-pill">🙋 <span id="totalQ">0</span> questions</div>
+      <div class="stat-pill">💬 <span id="totalA">0</span> answers</div>
+      <div class="stat-pill">👥 <span id="totalU">0</span> helpers</div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <aside class="sidebar">
+    <button class="ask-btn" id="openAskBtn">✏️ Ask Anonymously</button>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">📚 Subjects</div>
+      <div class="subject-list" id="subjectList"></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">🔥 Trending Tags</div>
+      <div class="tags-wrap">
+        <span class="tag">#exam</span>
+        <span class="tag">#assignment</span>
+        <span class="tag">#theory</span>
+        <span class="tag">#practical</span>
+        <span class="tag">#project</span>
+        <span class="tag">#viva</span>
+        <span class="tag">#notes</span>
+      </div>
+    </div>
+
+    <div class="sidebar-card" style="background:linear-gradient(135deg,rgba(99,102,241,0.1),rgba(139,92,246,0.1));border-color:rgba(99,102,241,0.3);">
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px;">🔒 100% Anonymous</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;">No login required. Your identity is never stored. Ask freely without fear.</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search doubts, topics, subjects..."/>
+    </div>
+
+    <div class="sort-tabs">
+      <button class="sort-tab active" data-sort="newest">🕒 Newest</button>
+      <button class="sort-tab" data-sort="popular">🔥 Most Voted</button>
+      <button class="sort-tab" data-sort="unanswered">❓ Unanswered</button>
+    </div>
+
+    <div id="questionsList"></div>
+  </main>
+</div>
+
+<!-- ASK MODAL -->
+<div class="modal-overlay" id="askModal">
+  <div class="modal">
+    <button class="modal-close" id="closeAskBtn">✕</button>
+    <div class="modal-title">🤫 Ask Anonymously</div>
+    <div class="modal-sub">No one will know it's you. Just ask freely.</div>
+
+    <div class="form-group">
+      <label class="form-label">Subject *</label>
+      <select class="form-select" id="qSubject"></select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Your Doubt *</label>
+      <input type="text" class="form-input" id="qTitle" placeholder="e.g. What is the difference between TCP and UDP?" maxlength="150"/>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">More Details (optional)</label>
+      <textarea class="form-textarea" id="qBody" placeholder="Add more context to your question..."></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" id="cancelAskBtn">Cancel</button>
+      <button class="btn-primary" id="submitQuestion">🚀 Post Doubt</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal" id="detailContent"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast success" id="toast">
+  <span class="toast-icon">✅</span>
+  <span id="toastMsg">Done!</span>
+</div>
+
+<script>
+  const SUBJECTS = [
+    { name: 'All',              color: '#94a3b8', emoji: '📋' },
+    { name: 'Mathematics',      color: '#6366f1', emoji: '📐' },
+    { name: 'Physics',          color: '#06b6d4', emoji: '⚛️' },
+    { name: 'Chemistry',        color: '#10b981', emoji: '🧪' },
+    { name: 'Computer Science', color: '#8b5cf6', emoji: '💻' },
+    { name: 'English',          color: '#f59e0b', emoji: '📝' },
+    { name: 'Biology',          color: '#f43f5e', emoji: '🧬' },
+    { name: 'Economics',        color: '#ec4899', emoji: '📊' },
+    { name: 'History',          color: '#a78bfa', emoji: '🏛️' },
+  ];
+
+  const SAMPLE = [
+    { id:'q1', subject:'Computer Science', title:'What is the difference between process and thread?', body:"I keep confusing these two. My professor explained it but I still don't get it. Can someone explain with a simple example?", votes:24, answers:[], timestamp:Date.now()-7200000, voted:false },
+    { id:'q2', subject:'Mathematics', title:'How to solve integration by parts? Any trick to remember?', body:'Especially the ILATE rule — when exactly do I apply it and when not?', votes:18, answers:[{text:"Remember LIATE: Logarithm, Inverse trig, Algebraic, Trigonometric, Exponential. Pick the first one as u and the second as dv. Practice 5 problems a day!", time:Date.now()-1800000}], timestamp:Date.now()-18000000, voted:false },
+    { id:'q3', subject:'Physics', title:"Why is the sky blue? What's the actual physics behind it?", body:'', votes:31, answers:[{text:"It's Rayleigh scattering! Shorter blue wavelengths scatter more than red ones. So the sky looks blue to us.",time:Date.now()-7200000},{text:"At sunset, light travels through more atmosphere, so most blue is scattered away, leaving red and orange.",time:Date.now()-3600000}], timestamp:Date.now()-28800000, voted:true },
+    { id:'q4', subject:'Chemistry', title:'How do I balance redox reactions? I am so lost.', body:"I know the half-reaction method exists but I always get the wrong answer in the exam.", votes:9, answers:[], timestamp:Date.now()-3600000, voted:false },
+    { id:'q5', subject:'Economics', title:"What's the difference between GDP and GNP?", body:'', votes:15, answers:[{text:"GDP = value of goods/services produced within a country's borders. GNP = GDP + income earned by residents abroad - income earned by foreigners within the country.",time:Date.now()-5400000}], timestamp:Date.now()-43200000, voted:false }
+  ];
+
+  let questions = JSON.parse(localStorage.getItem('anonDoubt_q') || 'null') || SAMPLE;
+  let activeSubject = 'All';
+  let activeSort = 'newest';
+  let searchQuery = '';
+
+  function save() { localStorage.setItem('anonDoubt_q', JSON.stringify(questions)); }
+
+  function timeAgo(ts) {
+    const d = Date.now() - ts;
+    const m = Math.floor(d/60000), h = Math.floor(d/3600000), dy = Math.floor(d/86400000);
+    if (m < 1) return 'just now';
+    if (m < 60) return m + 'm ago';
+    if (h < 24) return h + 'h ago';
+    return dy + 'd ago';
+  }
+
+  function sColor(n) { return (SUBJECTS.find(s=>s.name===n)||{color:'#64748b'}).color; }
+  function sEmoji(n) { return (SUBJECTS.find(s=>s.name===n)||{emoji:'📋'}).emoji; }
+
+  const AVATARS = { colors:['#6366f1','#8b5cf6','#10b981','#f59e0b','#f43f5e','#06b6d4','#ec4899'], emojis:['🦊','🐼','🦋','🐉','🦅','🐺','🦁','🐸','🦄','🐙'] };
+  function rAvatar() {
+    return { color: AVATARS.colors[Math.floor(Math.random()*AVATARS.colors.length)], emoji: AVATARS.emojis[Math.floor(Math.random()*AVATARS.emojis.length)] };
+  }
+
+  function escape(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  function filtered() {
+    let qs = [...questions];
+    if (activeSubject !== 'All') qs = qs.filter(q => q.subject === activeSubject);
+    if (searchQuery) { const sq = searchQuery.toLowerCase(); qs = qs.filter(q => q.title.toLowerCase().includes(sq) || q.body.toLowerCase().includes(sq) || q.subject.toLowerCase().includes(sq)); }
+    if (activeSort === 'newest') qs.sort((a,b)=>b.timestamp-a.timestamp);
+    if (activeSort === 'popular') qs.sort((a,b)=>b.votes-a.votes);
+    if (activeSort === 'unanswered') qs = qs.filter(q=>q.answers.length===0).sort((a,b)=>b.timestamp-a.timestamp);
+    return qs;
+  }
+
+  function renderSubjects() {
+    const counts = {};
+    SUBJECTS.forEach(s => counts[s.name] = 0);
+    questions.forEach(q => { if (counts[q.subject]!==undefined) counts[q.subject]++; });
+    document.getElementById('subjectList').innerHTML = SUBJECTS.map(s => {
+      const c = s.name==='All' ? questions.length : (counts[s.name]||0);
+      return `<button class="subject-btn ${activeSubject===s.name?'active':''}" onclick="setSub('${s.name}')"><div class="subject-left"><div class="subject-dot" style="background:${s.color}"></div>${s.emoji} ${s.name}</div><span class="subject-count">${c}</span></button>`;
+    }).join('');
+  }
+
+  function renderStats() {
+    document.getElementById('totalQ').textContent = questions.length;
+    document.getElementById('totalA').textContent = questions.reduce((a,q)=>a+q.answers.length,0);
+    document.getElementById('totalU').textContent = Math.floor(questions.length*1.8)+12;
+  }
+
+  function renderQuestions() {
+    const qs = filtered();
+    const list = document.getElementById('questionsList');
+    if (!qs.length) {
+      list.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">No doubts found</div><div class="empty-sub">Be the first to ask something!</div></div>';
+      return;
+    }
+    list.innerHTML = qs.map((q,i) => {
+      const c = sColor(q.subject), isNew = Date.now()-q.timestamp<3600000;
+      return `<div class="q-card" onclick="openDetail('${q.id}')" style="animation:slideUp .3s ease ${i*.05}s both">
+        <div class="q-header">
+          <span class="q-subject-tag" style="background:${c}22;color:${c};border:1px solid ${c}44">${sEmoji(q.subject)} ${q.subject}</span>
+          ${isNew?'<span class="new-badge">NEW</span>':''}
+        </div>
+        <div class="q-title">${escape(q.title)}</div>
+        ${q.body?`<div class="q-preview">${escape(q.body)}</div>`:''}
+        <div class="q-footer">
+          <div class="q-meta">
+            <span class="q-meta-item">🕒 ${timeAgo(q.timestamp)}</span>
+            <span class="q-meta-item">💬 ${q.answers.length} answer${q.answers.length!==1?'s':''}</span>
+          </div>
+          <div class="q-actions" onclick="event.stopPropagation()">
+            <button class="vote-btn ${q.voted?'voted':''}" onclick="vote('${q.id}')">👍 <span>${q.votes}</span></button>
+            <button class="answer-btn" onclick="openDetail('${q.id}')">💬 Answer</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function renderAll() { renderSubjects(); renderStats(); renderQuestions(); }
+
+  function setSub(n) { activeSubject=n; renderAll(); }
+
+  function vote(id) {
+    const q = questions.find(q=>q.id===id);
+    if (!q) return;
+    if (q.voted) { q.votes--; q.voted=false; } else { q.votes++; q.voted=true; showToast('👍 Upvoted!'); }
+    save(); renderAll();
+  }
+
+  function answerHtml(a) {
+    const av = rAvatar();
+    return `<div class="answer-card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;"><div class="anon-avatar" style="background:${av.color}">${av.emoji}</div><span style="font-size:12px;color:var(--muted)">Anonymous • ${timeAgo(a.time)}</span></div><div class="answer-text">${escape(a.text)}</div></div>`;
+  }
+
+  function openDetail(id) {
+    const q = questions.find(q=>q.id===id);
+    if (!q) return;
+    const c = sColor(q.subject);
+    document.getElementById('detailContent').innerHTML = `
+      <button class="modal-close" onclick="closeDetail()">✕</button>
+      <span class="q-subject-tag" style="background:${c}22;color:${c};border:1px solid ${c}44;font-size:12px;padding:4px 12px;border-radius:20px;font-weight:600;">${sEmoji(q.subject)} ${q.subject}</span>
+      <div class="q-detail-title">${escape(q.title)}</div>
+      ${q.body?`<div class="q-detail-body">${escape(q.body)}</div>`:''}
+      <div style="display:flex;gap:10px;margin-bottom:8px;align-items:center;">
+        <button class="vote-btn ${q.voted?'voted':''}" onclick="vote('${q.id}');document.querySelector('#detailContent .vote-btn span').textContent=questions.find(x=>x.id==='${q.id}').votes">👍 <span>${q.votes}</span> votes</button>
+        <span style="font-size:12px;color:var(--muted)">🕒 ${timeAgo(q.timestamp)}</span>
+      </div>
+      <div class="answers-section">
+        <div class="answers-title">Answers <span class="answer-count-badge" id="ansCount">${q.answers.length}</span></div>
+        <div id="answersList">${q.answers.length?q.answers.map(answerHtml).join(''):'<div style="text-align:center;padding:30px;color:var(--muted);font-size:14px;">🌟 Be the first to answer!</div>'}</div>
+        <div class="write-answer">
+          <div class="write-answer-label">✍️ Write an Answer</div>
+          <textarea class="form-textarea" id="answerInput" placeholder="Share your knowledge anonymously..."></textarea>
+          <div class="modal-actions" style="margin-top:12px;"><button class="btn-primary" onclick="submitAnswer('${q.id}')">Post Answer</button></div>
+        </div>
+      </div>`;
+    document.getElementById('detailModal').classList.add('open');
+  }
+
+  function closeDetail() { document.getElementById('detailModal').classList.remove('open'); renderAll(); }
+
+  function submitAnswer(id) {
+    const inp = document.getElementById('answerInput');
+    const text = inp.value.trim();
+    if (!text) { showToast('⚠️ Please write an answer first', false); return; }
+    const q = questions.find(q=>q.id===id);
+    if (!q) return;
+    q.answers.push({ text, time: Date.now() });
+    save();
+    inp.value = '';
+    document.getElementById('answersList').innerHTML = q.answers.map(answerHtml).join('');
+    const ac = document.getElementById('ansCount');
+    if (ac) ac.textContent = q.answers.length;
+    renderStats();
+    showToast('✅ Answer posted!');
+  }
+
+  // Ask modal
+  document.getElementById('openAskBtn').onclick = () => {
+    const sel = document.getElementById('qSubject');
+    sel.innerHTML = '<option value="">— Select Subject —</option>' + SUBJECTS.filter(s=>s.name!=='All').map(s=>`<option value="${s.name}">${s.emoji} ${s.name}</option>`).join('');
+    document.getElementById('askModal').classList.add('open');
+  };
+
+  ['closeAskBtn','cancelAskBtn'].forEach(id => {
+    document.getElementById(id).onclick = () => document.getElementById('askModal').classList.remove('open');
+  });
+
+  document.getElementById('askModal').onclick = e => { if (e.target===document.getElementById('askModal')) document.getElementById('askModal').classList.remove('open'); };
+  document.getElementById('detailModal').onclick = e => { if (e.target===document.getElementById('detailModal')) closeDetail(); };
+
+  document.getElementById('submitQuestion').onclick = () => {
+    const subject = document.getElementById('qSubject').value;
+    const title = document.getElementById('qTitle').value.trim();
+    const body = document.getElementById('qBody').value.trim();
+    if (!subject) { showToast('⚠️ Please select a subject', false); return; }
+    if (!title) { showToast('⚠️ Please enter your doubt', false); return; }
+    questions.unshift({ id:'q'+Date.now(), subject, title, body, votes:0, answers:[], timestamp:Date.now(), voted:false });
+    save();
+    document.getElementById('askModal').classList.remove('open');
+    ['qTitle','qBody'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('qSubject').value='';
+    showToast('✅ Doubt posted anonymously!');
+    activeSort='newest';
+    document.querySelectorAll('.sort-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelector('[data-sort="newest"]').classList.add('active');
+    renderAll();
+  };
+
+  document.getElementById('searchInput').oninput = e => { searchQuery=e.target.value.trim(); renderAll(); };
+
+  document.querySelectorAll('.sort-tab').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.sort-tab').forEach(t=>t.classList.remove('active'));
+      btn.classList.add('active');
+      activeSort=btn.dataset.sort;
+      renderQuestions();
+    };
+  });
+
+  let toastTimeout;
+  function showToast(msg, success=true) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.className = 'toast' + (success?' success':'');
+    t.querySelector('.toast-icon').textContent = success?'✅':'⚠️';
+    t.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(()=>t.classList.remove('show'), 3000);
+  }
+
+  renderAll();
+</script>
+</body>
+</html>
